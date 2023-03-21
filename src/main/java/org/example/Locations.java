@@ -1,11 +1,10 @@
 package org.example;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class Location
+public class Locations
 {
-    public Location() {
+    public Locations() {
     }
 
     @Override
@@ -18,7 +17,7 @@ public class Location
                 '}';
     }
 
-    public Location(String name, double lat, double lng, ArrayList<Double> routes) {
+    public Locations(String name, double lat, double lng, ArrayList<Double> routes) {
         this.name = name;
         this.lat = lat;
         this.lng = lng;
@@ -29,7 +28,7 @@ public class Location
     public double lat;
     public double lng;
 
-    public ArrayList<Objects> locations;
+
     public String getName() {
         return name;
     }
