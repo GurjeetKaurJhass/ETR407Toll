@@ -43,7 +43,7 @@ public class LocationReader
             JsonArray routes= (JsonArray)two.get("routes");
             JsonObject routes0= routes.get(0).getAsJsonObject();
             System.out.println(routes0);
-            JsonArray toID = (JsonObject) routes.get(Integer.parseInt("distance"));
+            //JsonArray toID = (JsonObject) routes.get(Integer.parseInt("distance"));
 
 
         }
