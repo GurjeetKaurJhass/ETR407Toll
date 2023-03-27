@@ -1,76 +1,49 @@
 package org.example;
 
-import com.google.gson.JsonArray;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
-
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.math.BigDecimal;
 
-/**
- * Hello world!
- *
- */
-public class LocationReader
-{
+public class LocationReader {
+    private static final int routeHighNum = 46;
+    private static final double tollRatePerKilometer = 0.25;
+    public static void main(String[] args) throws IOException {
+        JsonObject jsonObject = (JsonObject) new JsonParser().parse(new FileReader("./src/main/resources/interchanges.json"));
+        JsonObject locations = (JsonObject) jsonObject.get("locations");
+        for (int i = 1; i <= routeHighNum; i++) {
+            try {
+                // Get origin locations
+                JsonObject origin = (JsonObject) locations.get(String.valueOf(i));
+                Location data = new Gson().fromJson(origin, Location.class);
+                data.setId(i);
 
+                // Read routes
+                for (Route route: data.getRoutes()
+                ) {
 
-    public static void main(String[] args ) throws IOException {
-        JsonObject jsonObject = (JsonObject) new JsonParser().parse(new FileReader("/Users/gurjeet/ETR407Toll/src/main/resources/interchanges.json"));
-        JSONParser parser = new JSONParser();
+                    // Calculate the cost
+                    BigDecimal cost = BigDecimal.valueOf(route.getDistance() * tollRatePerKilometer);
+                    route.setCost(cost);
 
-//        try (Reader reader = new FileReader("/Users/gurjeet/ETR407Toll/src/main/resources/interchanges.json")) {
-//            JSONObject jsonObject = (JSONObject) parser.parse(reader);
-            System.out.println(jsonObject);
-            JsonObject locations = (JsonObject) jsonObject.get("locations");
+                    // Get destination
+                    JsonObject destination = (JsonObject) locations.get(String.valueOf(route.getToId()));
+                    Location destinationData = new Gson().fromJson(destination, Location.class);
 
-//           JsonObject one = (JsonObject) locations.get("1");
-//            System.out.println(one);
-//            String name =one.get("name").getAsString();
-//            System.out.println(name);
+                    System.out.println("costOfTrip('" + data.getName() + "', '" + destinationData.getName() + "')");
+                    System.out.println("Distance: " + route.getDistance());
+                    System.out.println("Cost: " + route.getCost());
+                    System.out.println("");
+                }
 
-        Iterator<JsonObject> iterator = Arrays.asList(locations).iterator();
-        while (iterator.hasNext()) {
-            System.out.println(iterator.next());
-            //String id = (String) jsonChildObject.get("toId");
-            // get locations array from the JSON Object and store it into JSONArray
-            JsonObject two = (JsonObject) locations.get("2");
-            JsonArray routes= (JsonArray)two.get("routes");
-            JsonObject routes0= routes.get(0).getAsJsonObject();
-            System.out.println(routes0);
-            //JsonArray toID = (JsonObject) routes.get(Integer.parseInt("distance"));
-
+                //System.out.println(data);
+            } catch(Exception e) {
+                //skip
+            }
 
         }
-        //iterator.forEachRemaining(System.out::println);
-
-//             System.out.println(name);
-//            JsonObject lat = (JsonObject) one.get("lat");
-//            System.out.println(lat);
-//            JsonObject lng = (JsonObject) one.get("lng");
-//            System.out.println(lng);
-//        JsonObject two = (JsonObject) locations.get("2");
-//        System.out.println(two);
-//        JsonArray routes= (JsonArray)two.get("routes");
-//        JsonObject routes0= routes.get(0).getAsJsonObject();
-//        System.out.println(routes0);
-            // loop array
-
-//            JsonArray routes = (JSONArray) one.get("routes");
-//            JsonArray toID = (JsonObject) routes.get("toId");
-            //JsonObject patient0 = patientbody.get(0).getAsJsonObject();
-
-
-
-
-
-
     }
-
-
-    }
+}
